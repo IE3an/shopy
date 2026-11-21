@@ -1,636 +1,277 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Heart, Menu, Search, ShoppingCart, Sparkles, User } from "lucide-react";
+import Link from "next/link";
+import {
+  ArrowLeft, ArrowUpLeft, Check, Heart, Menu, Search,
+  ShoppingBag, ShoppingCart, User, X, Plus, Minus, Headphones,
+  Smartphone, Laptop, Watch, Headphones as AudioIcon, Package, Zap
+} from "lucide-react";
+
+type Product = {
+  title: string;
+  subtitle: string;
+  priceLabel: string;
+  priceValue: number;
+  badge: string;
+  available?: boolean;
+  category: string;
+  visual: string;
+  accent: string;
+};
 
 type ChatMessage = { sender: "user" | "support"; text: string };
 
 function ChatBox() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { sender: "support", text: "سلام! برای راهنمایی بیشتر در خدمت شما هستیم." },
+    { sender: "support", text: "سلام! به پاندا شاپی خوش اومدی. چطور می‌تونیم کمکت کنیم؟" },
   ]);
   const [input, setInput] = useState("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const endRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), [messages]);
 
-  useEffect(scrollToBottom, [messages]);
-
-  const sendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
+  const sendMessage = (event: React.FormEvent) => {
+    event.preventDefault();
     if (!input.trim()) return;
-
-    setMessages((msgs) => [...msgs, { sender: "user", text: input }]);
+    setMessages((items) => [...items, { sender: "user", text: input.trim() }]);
     setInput("");
-
     window.setTimeout(() => {
-      setMessages((msgs) => [...msgs, { sender: "support", text: "پشتیبانی: پیام شما دریافت شد و در کوتاه‌ترین زمان پاسخ می‌دهیم." }]);
-    }, 900);
+      setMessages((items) => [...items, { sender: "support", text: "پیامت دریافت شد؛ همکاران ما به‌زودی راهنماییت می‌کنن." }]);
+    }, 800);
   };
 
   return (
     <>
-      <button
-        className="fixed bottom-6 left-6 z-50 flex items-center gap-2 rounded-full bg-zinc-900 px-4 py-3 text-sm font-medium text-white shadow-lg transition hover:bg-zinc-700"
-        onClick={() => setOpen((value) => !value)}
-        aria-label="پشتیبانی آنلاین"
-      >
-        <Sparkles size={18} />
-        <span className="hidden sm:inline">پشتیبانی</span>
+      <button onClick={() => setOpen((value) => !value)} aria-label="پشتیبانی آنلاین"
+        className="fixed bottom-6 left-6 z-[100] flex items-center gap-2 rounded-full bg-[#1728d8] px-5 py-3.5 text-sm font-bold text-white shadow-[0_12px_35px_rgba(23,40,216,.3)] transition hover:-translate-y-1 hover:bg-[#0d1bb7]">
+        <Headphones size={18} /><span>کمک لازم داری؟</span>
       </button>
-
-      {open && (
-        <div className="fixed bottom-24 left-6 z-50 flex w-80 max-w-[95vw] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl">
-          <div className="flex items-center justify-between bg-zinc-900 px-4 py-3 text-white">
-            <div>
-              <p className="text-sm font-semibold">پشتیبانی آنلاین</p>
-              <p className="text-xs text-zinc-400">در حال پاسخگویی</p>
-            </div>
-            <button onClick={() => setOpen(false)} className="rounded-full p-1 text-zinc-300 transition hover:bg-zinc-800 hover:text-white">
-              ✕
-            </button>
-          </div>
-
-          <div className="flex h-64 flex-1 flex-col gap-2 overflow-y-auto bg-zinc-50 p-3">
-            {messages.map((msg, index) => (
-              <div key={`${msg.sender}-${index}`} className={msg.sender === "user" ? "text-left" : "text-right"}>
-                <span
-                  className={
-                    msg.sender === "user"
-                      ? "inline-block max-w-[85%] rounded-2xl bg-zinc-900 px-3 py-2 text-sm text-white"
-                      : "inline-block max-w-[85%] rounded-2xl bg-zinc-200 px-3 py-2 text-sm text-zinc-800"
-                  }
-                >
-                  {msg.text}
-                </span>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-
-          <form onSubmit={sendMessage} className="flex items-center gap-2 border-t border-zinc-200 bg-white p-3">
-            <input
-              className="flex-1 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm outline-none focus:border-zinc-400"
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="پیام خود را بنویسید..."
-              autoFocus
-            />
-            <button type="submit" className="rounded-full bg-zinc-900 px-3 py-2 text-sm text-white transition hover:bg-zinc-700">
-              ارسال
-            </button>
-          </form>
+      {open && <div className="fixed bottom-24 left-6 z-[100] flex w-[min(360px,calc(100vw-32px))] flex-col overflow-hidden rounded-[26px] border border-black/10 bg-[#fffdf7] text-[#171717] shadow-2xl">
+        <div className="flex items-center justify-between bg-[#1728d8] px-5 py-4 text-white">
+          <div><p className="font-black">پشتیبانی پاندا</p><p className="mt-1 text-xs text-white/70">آنلاین و آماده پاسخگویی</p></div>
+          <button onClick={() => setOpen(false)} className="rounded-full p-2 hover:bg-white/15"><X size={18} /></button>
         </div>
-      )}
+        <div className="flex h-64 flex-col gap-3 overflow-y-auto bg-[#f5f2e9] p-4">
+          {messages.map((message, index) => <div key={index} className={message.sender === "user" ? "text-left" : "text-right"}>
+            <span className={`inline-block max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${message.sender === "user" ? "rounded-bl-sm bg-[#1728d8] text-white" : "rounded-br-sm bg-white text-[#272727] shadow-sm"}`}>{message.text}</span>
+          </div>)}
+          <div ref={endRef} />
+        </div>
+        <form onSubmit={sendMessage} className="flex gap-2 border-t border-black/10 bg-white p-3">
+          <input value={input} onChange={(event) => setInput(event.target.value)} placeholder="پیامت رو بنویس..." className="min-w-0 flex-1 rounded-full bg-[#f2f1ec] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#1728d8]/20" />
+          <button className="rounded-full bg-[#1728d8] px-4 text-sm font-bold text-white">ارسال</button>
+        </form>
+      </div>}
     </>
   );
 }
 
 export default function MainPage() {
-  type Product = {
-    title: string;
-    subtitle: string;
-    priceLabel: string;
-    priceValue: number;
-    badge: string;
-    available?: boolean;
-  };
-
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navItems = [
+    { label: "Store", slug: "store" },
+    { label: "Mac", slug: "mac" },
+    { label: "iPad", slug: "ipad" },
+    { label: "iPhone", slug: "iphone" },
+    { label: "Watch", slug: "watch" },
+    { label: "AirPods", slug: "airpods" },
+    { label: "Support", slug: "support" },
+  ];
+  const products: Product[] = [
+    { title: "iPhone 16 Pro", subtitle: "قدرتی که توی جیب جا می‌شه.", priceLabel: "از ۷۹,۹۹۹,۰۰۰ تومان", priceValue: 79999000, badge: "انتخاب سردبیر", category: "موبایل", visual: "PHONE", accent: "bg-[#dbe4ff]", },
+    { title: "MacBook Air M3", subtitle: "سبک‌وزن، اما جدی و قدرتمند.", priceLabel: "از ۵۹,۹۹۹,۰۰۰ تومان", priceValue: 59999000, badge: "پرفروش", category: "لپ‌تاپ", visual: "MAC", accent: "bg-[#f8dfca]", },
+    { title: "AirPods Pro", subtitle: "دنیای خودت رو واضح‌تر بشنو.", priceLabel: "از ۱۱,۹۹۹,۰۰۰ تومان", priceValue: 11999000, badge: "محبوب", category: "صوتی", visual: "SOUND", accent: "bg-[#d8f0df]", },
+    { title: "iPhone 17", subtitle: "نسل تازه‌ای از تجربه روزمره.", priceLabel: "از ۸۹,۹۹۹,۰۰۰ تومان", priceValue: 89999000, badge: "تازه رسیده", category: "موبایل", visual: "17", accent: "bg-[#f3d8e8]", },
+    { title: "Apple Watch Ultra 2", subtitle: "برای روزهایی که معمولی نیستند.", priceLabel: "ناموجود", priceValue: 29999000, badge: "ناموجود", category: "ساعت", visual: "WATCH", accent: "bg-[#e6e1d4]", available: false, },
+    { title: "iPad Pro", subtitle: "ایده‌هات رو از صفحه بیرون بیار.", priceLabel: "ناموجود", priceValue: 49999000, badge: "ناموجود", category: "تبلت", visual: "iPAD", accent: "bg-[#e2defa]", available: false, },
+  ];
+  const categories = [
+    { label: "همه محصولات", icon: Package },
+    { label: "موبایل", icon: Smartphone },
+    { label: "لپ‌تاپ", icon: Laptop },
+    { label: "تبلت", icon: Package },
+    { label: "ساعت", icon: Watch },
+    { label: "صوتی", icon: AudioIcon },
+  ];
+  const [activeCategory, setActiveCategory] = useState("همه محصولات");
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [cartItems, setCartItems] = useState<Array<{ title: string; price: number; quantity: number }>>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [supportNotice, setSupportNotice] = useState("");
-  const [cartToast, setCartToast] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [toast, setToast] = useState("");
 
-  const featuredProducts: Product[] = [
-    { title: "iPhone 16 Pro", subtitle: "قدرتی شگفت‌انگیز در کنار طراحی بی‌نقص", priceLabel: "از ۷۹,۹۹۹,۰۰۰ تومان", priceValue: 79999000, badge: "جدید" },
-    { title: "MacBook Air M3", subtitle: "سبک، سریع و آماده برای هر لحظه", priceLabel: "از ۵۹,۹۹۹,۰۰۰ تومان", priceValue: 59999000, badge: "پرفروش" },
-    { title: "AirPods Pro", subtitle: "صدایی واضح‌تر و تجربه‌ای بی‌نظیر", priceLabel: "از ۱۱,۹۹۹,۰۰۰ تومان", priceValue: 11999000, badge: "پیشنهاد ویژه" },
-    { title: "iPhone 16", subtitle: "قدرتی شگفت‌انگیز در کنار طراحی بی‌نقص", priceLabel: "از ۷۹,۹۹۹,۰۰۰ تومان", priceValue: 79999000, badge: "جدید" },
-    { title: "iPhone 17", subtitle: "قدرتی شگفت‌انگیز در کنار طراحی بی‌نقص", priceLabel: "از 89,۹۹۹,۰۰۰ تومان", priceValue: 79999000, badge: "جدید" }
-  ];
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const visibleProducts = products.filter((product) =>
+    (activeCategory === "همه محصولات" || product.category === activeCategory) &&
+    (!searchQuery.trim() || product.title.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+  );
+  const formatPrice = (value: number) => `${value.toLocaleString("fa-IR")} تومان`;
 
-  const catalogProducts: Product[] = [
-    ...featuredProducts,
-    { title: "Apple Watch Ultra 2", subtitle: "نسخه‌ای حرفه‌ای برای ورزش و سفر", priceLabel: "از ۲۹,۹۹۹,۰۰۰ تومان", priceValue: 29999000, badge: "ناموجود", available: false },
-    { title: "iPad Pro", subtitle: "برای طراحی، کار و سرگرمی", priceLabel: "از ۴۹,۹۹۹,۰۰۰ تومان", priceValue: 49999000, badge: "ناموجود", available: false },
-  ];
-
-  const categories = ["Store", "Mac", "iPad", "iPhone", "Watch", "AirPods", "Support"];
-
-  const highlights = [
-    { title: "طراحی مینیمال", text: "نمایی مدرن و شفاف که حس فروشگاه اپل را منتقل می‌کند." },
-    { title: "تجربه خرید آسان", text: "جستجو، انتخاب و ثبت سفارش در چند مرحله ساده." },
-    { title: "پشتیبانی سریع", text: "پشتیبانی آنلاین و پاسخگویی لحظه‌ای در تمام زمان‌ها." },
-  ];
+  const addToCart = (product: Product) => {
+    if (product.available === false) return;
+    setCartItems((current) => {
+      const found = current.find((item) => item.title === product.title);
+      return found
+        ? current.map((item) => item.title === product.title ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...current, { title: product.title, price: product.priceValue, quantity: 1 }];
+    });
+    setToast(`${product.title} به سبد اضافه شد`);
+    window.setTimeout(() => setToast(""), 2400);
+  };
+  const updateQuantity = (title: string, delta: number) => setCartItems((items) =>
+    items.map((item) => item.title === title ? { ...item, quantity: item.quantity + delta } : item).filter((item) => item.quantity > 0)
+  );
+  const toggleFavorite = (title: string) => setFavorites((items) => items.includes(title) ? items.filter((item) => item !== title) : [...items, title]);
 
   const profileOrders = [
     { id: "#1024", product: "iPhone 16 Pro", status: "تحویل شده", date: "۱۴۰۳/۰۵/۲۱" },
     { id: "#1028", product: "MacBook Air M3", status: "در حال پردازش", date: "۱۴۰۳/۰۵/۲۸" },
-    { id: "#1031", product: "AirPods Pro", status: "کنسل شده", date: "۱۴۰۳/۰۶/۰۳" },
   ];
 
-  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const filteredProducts = searchQuery.trim()
-    ? catalogProducts.filter((product) => product.title.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-    : [];
-
-  const addToCart = (product: Product) => {
-    setCartItems((currentItems) => {
-      const existingItem = currentItems.find((item) => item.title === product.title);
-      if (existingItem) {
-        return currentItems.map((item) =>
-          item.title === product.title ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      }
-      return [...currentItems, { title: product.title, price: product.priceValue, quantity: 1 }];
-    });
-    setCartToast(`"${product.title}" اضافه شد به سبد خرید`);
-    window.setTimeout(() => setCartToast(""), 2500);
-  };
-
-  const updateQuantity = (title: string, delta: number) => {
-    setCartItems((currentItems) =>
-      currentItems
-        .map((item) => (item.title === title ? { ...item, quantity: item.quantity + delta } : item))
-        .filter((item) => item.quantity > 0)
-    );
-  };
-
-  const formatPrice = (value: number) => `${value.toLocaleString("fa-IR")} تومان`;
-
-  const toggleFavorite = (product: Product) => {
-    setFavoriteProducts((currentFavorites) => {
-      const isAlreadyFavorite = currentFavorites.some((favorite) => favorite.title === product.title);
-      if (isAlreadyFavorite) {
-        return currentFavorites.filter((favorite) => favorite.title !== product.title);
-      }
-      return [...currentFavorites, product];
-    });
-  };
-
-  const handleSupportRequest = (productName: string) => {
-    setSupportNotice(`درخواست شما برای محصول ${productName} ثبت شد. تیم پشتیبانی در کوتاه‌ترین زمان با شما تماس می‌گیرد.`);
-  };
-
   return (
-    <div className="min-h-screen bg-[#f5f5f7] text-zinc-900">
-      <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+    <div dir="rtl" className="min-h-screen w-full overflow-x-clip bg-[#f4f1e8] text-[#171717] transition-all duration-300">
+      {/* Top navigation retained */}
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#111827] text-white shadow-lg shadow-black/10">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileMenuOpen((value) => !value)}
-              className="rounded-full p-2 text-zinc-700 transition hover:bg-zinc-100 lg:hidden"
-              aria-label="نمایش منو"
-            >
-              <Menu size={20} />
-            </button>
-
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900 text-sm font-semibold text-white">
-                T
-              </div>
-              <div>
-                <p className="text-lg font-semibold tracking-tight">Panda Shopy</p>
-                <p className="text-xs text-zinc-500">New experience for easy shoping</p>
-              </div>
+            <button onClick={() => setMobileMenuOpen((value) => !value)} className="rounded-xl p-2 text-white/80 transition hover:bg-white/10 lg:hidden" aria-label="نمایش منو"><Menu size={20} /></button>
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f5c84c] text-lg font-black text-[#111827]">P</div>
+              <div><p className="text-lg font-black tracking-tight">Panda Shopy</p><p className="text-[10px] tracking-wide text-white/50">A smarter way to shop</p></div>
             </div>
           </div>
-
-          <nav className="hidden items-center gap-8 text-sm font-medium text-zinc-600 lg:flex">
-            {categories.map((item) => (
-              <a key={item} href="#" className="transition hover:text-zinc-900">
-                {item}
-              </a>
-            ))}
+          <nav className="hidden items-center gap-7 text-sm font-semibold text-white/65 lg:flex">
+            {navItems.map((item) => <Link key={item.slug} href={`/main/${item.slug}`} className="transition hover:text-[#f5c84c]">{item.label}</Link>)}
           </nav>
-
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="flex items-center gap-2">
-              <button
-                aria-label="جستجو"
-                onClick={() => {
-                  setIsSearchOpen((value) => !value);
-                  setSupportNotice("");
-                }}
-                className="rounded-full p-2 text-zinc-700 transition hover:bg-zinc-100"
-              >
-                <Search size={18} />
-              </button>
-              {isSearchOpen && (
-                <div className="relative">
-                  <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-2 shadow-sm">
-                    <Search size={16} className="text-zinc-400" />
-                    <input
-                      value={searchQuery}
-                      onChange={(event) => {
-                        setSearchQuery(event.target.value);
-                        setSupportNotice("");
-                      }}
-                      placeholder="جستجوی محصول..."
-                      className="w-40 bg-transparent text-sm outline-none sm:w-56"
-                      autoFocus
-                    />
-                    <button
-                      aria-label="بستن جستجو"
-                      onClick={() => {
-                        setIsSearchOpen(false);
-                        setSearchQuery("");
-                        setSupportNotice("");
-                      }}
-                      className="rounded-full p-1 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
-                    >
-                      ✕
-                    </button>
-                  </div>
-
-                  {searchQuery.trim() && (
-                    <div className="absolute left-0 right-0 top-14 z-[80] max-h-80 overflow-y-auto rounded-[24px] border border-zinc-200 bg-white p-3 shadow-2xl">
-                      {supportNotice && (
-                        <div className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
-                          {supportNotice}
-                        </div>
-                      )}
-
-                      {filteredProducts.length > 0 ? (
-                        filteredProducts.map((product) => (
-                          <div key={product.title} className="rounded-[18px] border border-zinc-200 bg-zinc-50 p-3 last:mb-0">
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <p className="font-semibold text-zinc-900">{product.title}</p>
-                                <p className="mt-1 text-sm text-zinc-500">{product.subtitle}</p>
-                              </div>
-                              <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${product.available === false ? "bg-amber-100 text-amber-700" : "bg-emerald-100 text-emerald-700"}`}>
-                                {product.available === false ? "ناموجود" : "موجود"}
-                              </span>
-                            </div>
-
-                            {product.available === false ? (
-                              <div className="mt-3 flex items-center justify-between gap-2">
-                                <p className="text-sm text-zinc-500">این محصول در حال حاضر موجود نیست.</p>
-                                <button
-                                  onClick={() => handleSupportRequest(product.title)}
-                                  className="rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700"
-                                >
-                                  درخواست پشتیبانی
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="mt-3 flex items-center justify-between gap-2">
-                                <span className="text-sm font-semibold text-zinc-900">{product.priceLabel}</span>
-                                <button
-                                  onClick={() => addToCart(product)}
-                                  className="rounded-full bg-zinc-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-zinc-700"
-                                >
-                                  افزودن به سبد
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <div className="rounded-[18px] border border-dashed border-zinc-300 bg-zinc-50 p-4 text-sm text-zinc-500">
-                          محصولی با این نام پیدا نشد. اگر مدنظرتان محصولی است که در فروشگاه نیست، درخواست پشتیبانی بدهید.
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <button
-              aria-label="پروفایل"
-              onClick={() => setIsProfileOpen(true)}
-              className="rounded-full p-2 text-zinc-700 transition hover:bg-zinc-100"
-            >
-              <User size={18} />
-            </button>
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative rounded-full p-2 text-zinc-700 transition hover:bg-zinc-100"
-            >
-              <ShoppingCart size={18} />
-              {cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 rounded-full bg-zinc-900 px-1.5 py-0.5 text-[10px] font-semibold text-white">
-                  {cartCount}
-                </span>
-              )}
+          <div className="flex items-center gap-1 sm:gap-2">
+            <button onClick={() => setSearchOpen((value) => !value)} aria-label="جستجو" className="rounded-xl p-2.5 text-white/80 transition hover:bg-white/10 hover:text-[#f5c84c]"><Search size={19} /></button>
+            <button onClick={() => setProfileOpen(true)} aria-label="پروفایل" className="rounded-xl p-2.5 text-white/80 transition hover:bg-white/10 hover:text-[#f5c84c]"><User size={19} /></button>
+            <button onClick={() => setCartOpen(true)} aria-label="سبد خرید" className="relative rounded-xl p-2.5 text-white/80 transition hover:bg-white/10 hover:text-[#f5c84c]">
+              <ShoppingCart size={19} />{cartCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#f5c84c] px-1 text-[10px] font-black text-[#111827]">{cartCount}</span>}
             </button>
           </div>
         </div>
-
-        {mobileMenuOpen && (
-          <div className="border-t border-zinc-200 bg-white px-4 py-4 lg:hidden">
-            <div className="flex flex-col gap-3 text-sm font-medium text-zinc-600">
-              {categories.map((item) => (
-                <a key={item} href="#" className="transition hover:text-zinc-900">
-                  {item}
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
+        {mobileMenuOpen && <div className="border-t border-white/10 bg-[#111827] px-5 py-4 lg:hidden"><div className="flex flex-wrap gap-4 text-sm text-white/75">{navItems.map((item) => <Link key={item.slug} href={`/main/${item.slug}`} onClick={() => setMobileMenuOpen(false)}>{item.label}</Link>)}</div></div>}
+        {searchOpen && <div className="border-t border-white/10 bg-[#111827] px-4 py-3"><div className="mx-auto flex max-w-7xl items-center gap-3"><Search size={18} className="text-white/50" /><input autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="اسم محصول رو جستجو کن..." className="w-full bg-transparent py-2 text-sm text-white outline-none placeholder:text-white/35" /><button onClick={() => { setSearchOpen(false); setSearchQuery(""); }} className="text-white/50 hover:text-white"><X size={18} /></button></div></div>}
       </header>
 
-      <main className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <section className="overflow-hidden rounded-[32px] bg-zinc-950 text-white shadow-2xl">
-          <div className="grid gap-8 px-6 py-10 sm:px-10 lg:grid-cols-[1.1fr_0.9fr] lg:px-16 lg:py-16">
-            <div className="flex flex-col justify-center gap-5">
-              <span className="w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm text-zinc-300">
-                جدیدترین لاین‌آپ فروشگاه
-              </span>
-              <h1 className="text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
-                تجربه خریدی شبیه اپل، با حس مدرن‌تر.
-              </h1>
-              <p className="max-w-xl text-lg text-zinc-300">
-                از گوشی‌های هوشمند تا لپ‌تاپ‌های پرقدرت، همه چیز در یک صفحه‌ی مینیمال و سریع آماده‌ی انتخاب است.
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <button className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-200">
-                  مشاهده محصولات
-                </button>
-                <button className="flex items-center gap-2 rounded-full border border-white/20 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
-                  بیشتر بدانید <ArrowLeft size={16} />
-                </button>
+      <main className="mx-auto max-w-7xl px-4 pb-20 pt-7 sm:px-6 lg:px-8 lg:pt-10">
+        {/* Editorial hero */}
+        <section className="relative overflow-hidden rounded-[2rem] bg-[#f5c84c] px-6 py-8 sm:px-10 sm:py-12 lg:px-14 lg:py-16">
+          <div className="absolute -left-20 -top-24 h-72 w-72 rounded-full border-[42px] border-[#171717]/[0.06]" />
+          <div className="absolute -bottom-28 right-[38%] h-72 w-72 rounded-full bg-[#1728d8]/[0.08] blur-2xl" />
+          <div className="relative grid items-center gap-10 lg:grid-cols-[1.05fr_.95fr]">
+            <div className="max-w-2xl">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-black/15 bg-white/45 px-4 py-2 text-xs font-black tracking-wide"><Zap size={14} /> انتخاب‌های هوشمند، خرید بی‌دردسر</div>
+              <p className="mb-3 text-sm font-black uppercase tracking-[.22em] text-black/50">PANDA SELECT / 2026</p>
+              <h1 className="text-4xl font-black leading-[1.18] tracking-tight sm:text-6xl lg:text-7xl">تکنولوژی،<br /><span className="text-[#1728d8]">با انتخاب تو.</span></h1>
+              <p className="mt-6 max-w-lg text-base leading-8 text-black/65 sm:text-lg">وسایلی که هر روز ازشون استفاده می‌کنی، باید دقیقاً همون‌قدر خاص باشن که تو هستی.</p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a href="#products" className="inline-flex items-center gap-3 rounded-full bg-[#171717] px-6 py-3.5 text-sm font-black text-white transition hover:-translate-y-1 hover:bg-[#1728d8]">کشف محصولات <ArrowLeft size={17} /></a>
+                <span className="text-xs font-bold text-black/50">ارسال سریع · انتخاب مطمئن · پشتیبانی واقعی</span>
               </div>
             </div>
-
-            <div className="flex flex-col gap-4 rounded-[24px] border border-white/10 bg-white/10 p-5 backdrop-blur">
-              <div className="rounded-[20px] bg-gradient-to-br from-zinc-700 via-zinc-800 to-zinc-950 p-6">
-                <p className="text-sm text-zinc-300">پرفروش این هفته</p>
-                <h2 className="mt-2 text-2xl font-semibold">iPhone 16 Pro Max</h2>
-                <p className="mt-3 text-sm text-zinc-400">عالی برای عکاسی، اجرا و کارهای روزمره.</p>
-                <div className="mt-6 flex items-center justify-between">
-                  <span className="text-xl font-semibold">از ۹۹,۹۹۹,۰۰۰ تومان</span>
-                  <button
-                    onClick={() => addToCart(featuredProducts[0])}
-                    className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-200"
-                  >
-                    افزودن به سبد
-                  </button>
-                </div>
+            <div className="relative mx-auto flex h-[270px] w-full max-w-[470px] items-center justify-center sm:h-[350px]">
+              <div className="absolute h-56 w-56 rotate-[-12deg] rounded-[3rem] bg-[#1728d8] shadow-[18px_24px_0_rgba(23,23,23,.12)] sm:h-72 sm:w-72" />
+              <div className="absolute left-[13%] top-[9%] h-44 w-32 rotate-[-19deg] rounded-[2rem] border-[7px] border-[#171717] bg-[#d8e1ff] shadow-xl sm:h-56 sm:w-40">
+                <div className="absolute left-3 top-3 h-10 w-10 rounded-full border-[5px] border-[#171717] bg-[#9eafea]" />
+                <div className="absolute left-3 top-16 h-10 w-10 rounded-full border-[5px] border-[#171717] bg-[#9eafea]" />
               </div>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                {featuredProducts.slice(1).map((product) => (
-                  <div key={product.title} className="rounded-[20px] border border-white/10 bg-white/10 p-4">
-                    <p className="text-xs text-zinc-400">{product.badge}</p>
-                    <h3 className="mt-2 text-lg font-semibold">{product.title}</h3>
-                    <p className="mt-2 text-sm text-zinc-400">{product.subtitle}</p>
-                    <p className="mt-4 text-sm font-medium text-white">{product.priceLabel}</p>
-                  </div>
-                ))}
+              <div className="absolute bottom-[8%] right-[10%] flex h-32 w-44 rotate-[10deg] items-center justify-center rounded-[1.7rem] border-[6px] border-[#171717] bg-[#f7f7f3] shadow-2xl sm:h-40 sm:w-56">
+                <div className="h-24 w-24 rounded-full border-[8px] border-[#171717] bg-[#f5c84c] sm:h-28 sm:w-28" />
               </div>
+              <div className="absolute right-[4%] top-[4%] rounded-full bg-[#171717] px-4 py-2 text-xs font-black text-white">NEW DROP ↗</div>
+              <div className="absolute bottom-[2%] left-[5%] -rotate-6 rounded-xl bg-white px-4 py-3 text-sm font-black shadow-lg">PICK YOUR TECH.</div>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          {highlights.map((item) => (
-            <div key={item.title} className="rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold">{item.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-zinc-600">{item.text}</p>
-            </div>
-          ))}
+        {/* Service strip */}
+        <section className="my-7 grid gap-3 sm:grid-cols-3">
+          {[
+            { number: "01", title: "انتخاب حساب‌شده", detail: "محصولات منتخب، بدون سردرگمی" },
+            { number: "02", title: "خرید آسوده", detail: "مسیر ساده از انتخاب تا سفارش" },
+            { number: "03", title: "کنار تو هستیم", detail: "پشتیبانی برای قبل و بعد خرید" },
+          ].map((item) => <div key={item.number} className="flex items-center gap-4 border-b-2 border-[#171717]/10 bg-white/55 px-5 py-5 sm:border-b-0 sm:border-r-2 sm:border-[#1728d8]">
+            <span className="text-3xl font-black text-[#1728d8]/35">{item.number}</span><div><h3 className="font-black">{item.title}</h3><p className="mt-1 text-xs text-black/50">{item.detail}</p></div>
+          </div>)}
         </section>
 
-        <section className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-sm font-medium text-zinc-500">محصولات منتخب</p>
-              <h2 className="text-2xl font-semibold text-zinc-900">برندهای محبوب و جدید</h2>
+        {/* Products */}
+        <section id="products" className="scroll-mt-28 pt-8">
+          <div className="mb-7 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <div><p className="mb-2 text-xs font-black tracking-[.2em] text-[#1728d8]">THE COLLECTION / 01</p><h2 className="text-3xl font-black tracking-tight sm:text-4xl">چیزهای دوست‌داشتنی.</h2><p className="mt-2 text-sm text-black/50">محصول بعدی موردعلاقه‌ات رو پیدا کن.</p></div>
+            <div className="flex flex-wrap gap-2">
+              {categories.map(({ label, icon: Icon }) => <button key={label} onClick={() => setActiveCategory(label)} className={`inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-xs font-bold transition ${activeCategory === label ? "border-[#1728d8] bg-[#1728d8] text-white" : "border-black/10 bg-white text-black/65 hover:border-[#1728d8] hover:text-[#1728d8]"}`}><Icon size={14} />{label}</button>)}
             </div>
-            <button className="rounded-full border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100">
-              مشاهده همه
-            </button>
           </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {featuredProducts.map((product) => (
-              <div key={product.title} className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-5 transition hover:-translate-y-1 hover:shadow-md">
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="rounded-full bg-zinc-900 px-3 py-1 text-xs font-medium text-white">{product.badge}</span>
-                  <button
-                    aria-label={favoriteProducts.some((favorite) => favorite.title === product.title) ? "حذف از علاقه‌مندی‌ها" : "افزودن به علاقه‌مندی‌ها"}
-                    onClick={() => toggleFavorite(product)}
-                    className={`rounded-full p-2 transition ${favoriteProducts.some((favorite) => favorite.title === product.title) ? "bg-rose-100 text-rose-600" : "text-zinc-500 hover:bg-white hover:text-zinc-900"}`}
-                  >
-                    <Heart size={16} fill={favoriteProducts.some((favorite) => favorite.title === product.title) ? "currentColor" : "none"} />
-                  </button>
+          {visibleProducts.length ? <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {visibleProducts.map((product, index) => <article key={product.title} className="group relative overflow-hidden rounded-[1.7rem] border border-black/[0.06] bg-white p-4 transition duration-300 hover:-translate-y-2 hover:shadow-[0_24px_55px_rgba(23,23,23,.1)]">
+              <div className={`relative flex h-56 items-center justify-center overflow-hidden rounded-[1.25rem] ${product.accent}`}>
+                <span className="absolute right-4 top-4 rounded-full bg-white/75 px-3 py-1.5 text-[10px] font-black text-black/65">{product.badge}</span>
+                <button onClick={() => toggleFavorite(product.title)} aria-label="علاقه‌مندی" className={`absolute left-4 top-4 rounded-full p-2.5 transition ${favorites.includes(product.title) ? "bg-[#ffdfdf] text-[#e34b56]" : "bg-white/70 text-black/55 hover:text-[#e34b56]"}`}><Heart size={17} fill={favorites.includes(product.title) ? "currentColor" : "none"} /></button>
+                <div className={`relative flex items-center justify-center transition duration-500 group-hover:scale-110 ${index % 3 === 0 ? "h-36 w-28 rotate-[-8deg] rounded-[2rem] border-[7px] border-[#202020] bg-[#aebef1] shadow-xl" : index % 3 === 1 ? "h-28 w-44 rotate-[5deg] rounded-[1.4rem] border-[7px] border-[#202020] bg-[#d6d9df] shadow-xl" : "h-32 w-32 rounded-full border-[9px] border-[#202020] bg-[#f8f8f5] shadow-xl"}`}>
+                  <span className="text-[11px] font-black tracking-widest text-black/55">{product.visual}</span>
                 </div>
-                <div className="flex h-32 items-center justify-center rounded-[20px] bg-gradient-to-br from-zinc-200 to-zinc-100 text-4xl font-semibold text-zinc-700">
-                  {product.title.split(" ")[0]}
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-zinc-900">{product.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-zinc-600">{product.subtitle}</p>
-                <div className="mt-5 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-zinc-900">{product.priceLabel}</span>
-                  <button
-                    onClick={() => addToCart(product)}
-                    className="rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700"
-                  >
-                    افزودن
-                  </button>
+                <span className="absolute bottom-3 left-4 text-[10px] font-black tracking-[.2em] text-black/30">PS / 0{index + 1}</span>
+              </div>
+              <div className="px-2 pb-2 pt-5">
+                <div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-black tracking-[.16em] text-[#1728d8]">{product.category}</p><h3 className="mt-1 text-xl font-black">{product.title}</h3></div><span className="rounded-lg bg-[#f4f1e8] px-2 py-1 text-[10px] font-black text-black/45">0{index + 1}</span></div>
+                <p className="mt-2 min-h-6 text-xs text-black/50">{product.subtitle}</p>
+                <div className="mt-5 flex items-center justify-between gap-3 border-t border-black/[0.07] pt-4">
+                  <div><p className="text-[10px] text-black/40">قیمت</p><p className="mt-1 text-sm font-black">{product.available === false ? "به‌زودی" : product.priceLabel}</p></div>
+                  <button disabled={product.available === false} onClick={() => addToCart(product)} className="inline-flex items-center gap-2 rounded-full bg-[#171717] px-4 py-3 text-xs font-black text-white transition hover:bg-[#1728d8] disabled:cursor-not-allowed disabled:bg-black/15"><Plus size={14} />{product.available === false ? "ناموجود" : "افزودن"}</button>
                 </div>
               </div>
-            ))}
+            </article>)}
+          </div> : <div className="rounded-3xl border border-dashed border-black/20 bg-white/60 p-12 text-center text-sm text-black/50">محصولی با این مشخصات پیدا نشد.</div>}
+        </section>
+
+        {/* Closing banner */}
+        <section className="relative mt-16 overflow-hidden rounded-[2rem] bg-[#1728d8] px-6 py-10 text-white sm:px-10 sm:py-14">
+          <div className="absolute -left-10 -top-24 h-64 w-64 rounded-full border-[35px] border-white/10" />
+          <div className="relative flex flex-col justify-between gap-7 md:flex-row md:items-center">
+            <div><p className="mb-3 text-xs font-black tracking-[.2em] text-[#f5c84c]">GOOD TECH. GOOD DAYS.</p><h2 className="max-w-xl text-3xl font-black leading-tight sm:text-4xl">یه انتخاب خوب،<br />می‌تونه هر روزت رو بهتر کنه.</h2></div>
+            <a href="#products" className="inline-flex w-fit items-center gap-3 rounded-full bg-[#f5c84c] px-6 py-3.5 text-sm font-black text-[#171717] transition hover:-translate-y-1 hover:bg-white">دیدن محصولات <ArrowUpLeft size={17} /></a>
           </div>
         </section>
       </main>
 
-      <footer className="border-t border-zinc-200 bg-white/80">
-        <div className="mx-auto flex max-w-7xl flex-col gap-8 px-4 py-10 text-sm text-zinc-600 sm:px-6 lg:flex-row lg:justify-between lg:px-8">
-          <div>
-            <p className="text-lg font-semibold text-zinc-900">Panda Shopy</p>
-            <p className="mt-3 max-w-md leading-7">
-              فروشگاه مدرن و مینیمال با طراحی الهام‌گرفته از تجربه‌ی برندهای پیشرو.
-            </p>
-          </div>
-          <div>
-            <p className="font-semibold text-zinc-900">لینک‌های سریع</p>
-            <ul className="mt-3 space-y-2">
-              <li>درباره ما</li>
-              <li>تماس با ما</li>
-              <li>قوانین و مقررات</li>
-            </ul>
-          </div>
-          <div>
-            <p className="font-semibold text-zinc-900">شبکه‌های اجتماعی</p>
-            <div className="mt-3 flex gap-3">
-              <span className="rounded-full bg-zinc-100 px-3 py-2">Instagram</span>
-              <span className="rounded-full bg-zinc-100 px-3 py-2">X</span>
-            </div>
-          </div>
+      <footer className="bg-[#111827] px-4 py-10 text-white sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-8 md:flex-row">
+          <div><p className="text-xl font-black">Panda Shopy<span className="text-[#f5c84c]">.</span></p><p className="mt-3 max-w-sm text-sm leading-7 text-white/45">تکنولوژی خوب قرار نیست پیچیده باشه. ما اینجاییم تا انتخابش ساده‌تر بشه.</p></div>
+          <div className="grid grid-cols-2 gap-x-12 gap-y-3 text-sm text-white/60"><a href="#products" className="hover:text-[#f5c84c]">فروشگاه</a><a href="#products" className="hover:text-[#f5c84c]">محصولات</a><span>درباره ما</span><span>تماس با ما</span><span>قوانین و مقررات</span><span>اینستاگرام</span></div>
         </div>
+        <div className="mx-auto mt-8 max-w-7xl border-t border-white/10 pt-5 text-xs text-white/30">© 2026 Panda Shopy — ساخته‌شده برای انتخاب‌های بهتر.</div>
       </footer>
 
-      {isCartOpen && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-lg overflow-hidden rounded-[32px] bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4">
-              <div>
-                <p className="text-lg font-semibold text-zinc-900">سبد خرید</p>
-                <p className="text-sm text-zinc-500">{cartCount} کالا</p>
-              </div>
-              <button
-                onClick={() => setIsCartOpen(false)}
-                className="rounded-full p-2 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
-              >
-                ✕
-              </button>
-            </div>
+      {/* Cart drawer/modal */}
+      {cartOpen && <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/55 p-4 backdrop-blur-md" onClick={() => setCartOpen(false)}>
+        <aside
+          onClick={(event) => event.stopPropagation()}
+          className="flex max-h-[calc(100dvh-2rem)] w-full max-w-xl flex-col overflow-hidden rounded-[2rem] bg-[#fffdf7] text-[#171717] shadow-2xl"
+        >
+          <div className="flex items-center justify-between border-b border-black/10 px-6 py-5"><div><p className="text-xl font-black">سبد خرید</p><p className="mt-1 text-xs text-black/45">{cartCount} کالا در سبد</p></div><button onClick={() => setCartOpen(false)} className="rounded-full bg-black/5 p-2"><X size={18} /></button></div>
+          <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-5">{cartItems.length === 0 ? <div className="mt-10 rounded-2xl bg-[#f4f1e8] p-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#1728d8]" size={30} /><p className="font-black">سبدت هنوز خالیه!</p><p className="mt-2 text-sm text-black/45">چندتا محصول جذاب بهش اضافه کن.</p></div> : cartItems.map((item) => <div key={item.title} className="rounded-2xl border border-black/10 bg-white p-4"><div className="flex justify-between gap-3"><div><p className="font-black">{item.title}</p><p className="mt-1 text-xs text-black/45">{formatPrice(item.price)}</p></div><button onClick={() => updateQuantity(item.title, -item.quantity)} className="text-black/35 hover:text-red-500"><X size={17} /></button></div><div className="mt-4 flex items-center justify-between"><div className="flex items-center gap-3 rounded-full bg-[#f4f1e8] p-1"><button onClick={() => updateQuantity(item.title, -1)} className="rounded-full p-1.5 hover:bg-white"><Minus size={14} /></button><span className="min-w-4 text-center text-sm font-black">{item.quantity}</span><button onClick={() => updateQuantity(item.title, 1)} className="rounded-full p-1.5 hover:bg-white"><Plus size={14} /></button></div><p className="text-sm font-black">{formatPrice(item.price * item.quantity)}</p></div></div>)}</div>
+          <div className="border-t border-black/10 bg-white p-6"><div className="mb-4 flex justify-between text-sm"><span className="text-black/50">مبلغ قابل پرداخت</span><strong className="text-lg font-black">{formatPrice(totalPrice)}</strong></div><button disabled={!cartItems.length} className="w-full rounded-full bg-[#1728d8] py-4 text-sm font-black text-white transition hover:bg-[#111827] disabled:bg-black/15">ادامه فرایند خرید</button></div>
+        </aside>
+      </div>}
 
-            <div className="max-h-[60vh] overflow-y-auto p-5">
-              {cartItems.length === 0 ? (
-                <div className="rounded-[24px] border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm text-zinc-500">
-                  سبد خرید شما خالی است.
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {cartItems.map((item) => (
-                    <div key={item.title} className="rounded-[20px] border border-zinc-200 bg-zinc-50 p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="font-semibold text-zinc-900">{item.title}</p>
-                          <p className="mt-1 text-sm text-zinc-500">{formatPrice(item.price)}</p>
-                        </div>
-                        <button
-                          onClick={() => updateQuantity(item.title, -1)}
-                          className="rounded-full p-1 text-zinc-500 transition hover:bg-white hover:text-zinc-900"
-                        >
-                          ✕
-                        </button>
-                      </div>
-
-                      <div className="mt-4 flex items-center justify-between">
-                        <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-2 py-1">
-                          <button
-                            onClick={() => updateQuantity(item.title, -1)}
-                            className="h-7 w-7 rounded-full text-lg text-zinc-600 transition hover:bg-zinc-100"
-                          >
-                            −
-                          </button>
-                          <span className="min-w-6 text-center text-sm font-semibold text-zinc-900">{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.title, 1)}
-                            className="h-7 w-7 rounded-full text-lg text-zinc-600 transition hover:bg-zinc-100"
-                          >
-                            +
-                          </button>
-                        </div>
-                        <p className="text-sm font-semibold text-zinc-900">{formatPrice(item.price * item.quantity)}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="rounded-b-[32px] border-t border-zinc-200 bg-white p-5">
-              <div className="mb-4 flex items-center justify-between text-sm text-zinc-600">
-                <span>جمع کل</span>
-                <span className="text-lg font-semibold text-zinc-900">{formatPrice(totalPrice)}</span>
-              </div>
-              <button className="w-full rounded-full bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-zinc-700">
-                تکمیل خرید
-              </button>
-            </div>
-          </div>
+      {/* Profile modal */}
+      {profileOpen && <div className="fixed inset-0 z-[95] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm" onClick={() => setProfileOpen(false)}>
+        <div onClick={(event) => event.stopPropagation()} className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-[2rem] bg-[#fffdf7] p-6 text-[#171717] shadow-2xl sm:p-8">
+          <div className="flex items-start justify-between"><div className="flex items-center gap-4"><div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f5c84c]"><User size={25} /></div><div><h2 className="text-xl font-black">حساب کاربری</h2><p className="mt-1 text-sm text-black/45">خوش اومدی به پاندا شاپی</p></div></div><button onClick={() => setProfileOpen(false)} className="rounded-full bg-black/5 p-2"><X size={18} /></button></div>
+          <div className="mt-7 grid gap-5 md:grid-cols-2"><section className="rounded-2xl bg-[#f4f1e8] p-5"><h3 className="font-black">آخرین سفارش‌ها</h3><div className="mt-4 space-y-3">{profileOrders.map((order) => <div key={order.id} className="rounded-xl bg-white p-3"><div className="flex justify-between gap-2"><strong className="text-sm">{order.product}</strong><span className="text-[10px] font-bold text-[#1728d8]">{order.status}</span></div><p className="mt-2 text-xs text-black/40">{order.id} · {order.date}</p></div>)}</div></section>
+            <section className="rounded-2xl bg-[#f4f1e8] p-5"><h3 className="font-black">علاقه‌مندی‌ها <span className="text-[#1728d8]">({favorites.length})</span></h3><div className="mt-4 space-y-2">{favorites.length ? favorites.map((title) => <div key={title} className="flex items-center justify-between rounded-xl bg-white p-3 text-sm font-bold"><span>{title}</span><button onClick={() => toggleFavorite(title)} className="text-black/35 hover:text-red-500"><X size={16} /></button></div>) : <p className="rounded-xl bg-white p-4 text-sm text-black/40">هنوز چیزی ذخیره نکردی.</p>}</div></section></div>
         </div>
-      )}
+      </div>}
 
-      {isProfileOpen && (
-        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-2xl rounded-[32px] bg-white p-6 shadow-2xl sm:p-8">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-zinc-900 text-lg font-semibold text-white">
-                  AH
-                </div>
-                <div>
-                  <p className="text-xl font-semibold text-zinc-900">امیرحسین قاسمی</p>
-                  <p className="mt-1 text-sm text-zinc-500">amir@example.com</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsProfileOpen(false)}
-                className="rounded-full p-2 text-zinc-600 transition hover:bg-zinc-100 hover:text-zinc-900"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-[1.15fr_0.85fr]">
-              <div className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
-                <p className="text-sm font-semibold text-zinc-900">سفارش‌های من</p>
-                <div className="mt-4 space-y-3">
-                  {profileOrders.map((order) => (
-                    <div key={order.id} className="rounded-[18px] border border-zinc-200 bg-white p-3">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="font-semibold text-zinc-900">{order.product}</p>
-                        <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${order.status === "تحویل شده" ? "bg-emerald-100 text-emerald-700" : order.status === "در حال پردازش" ? "bg-amber-100 text-amber-700" : "bg-rose-100 text-rose-700"}`}>
-                          {order.status}
-                        </span>
-                      </div>
-                      <div className="mt-2 flex items-center justify-between text-sm text-zinc-500">
-                        <span>{order.id}</span>
-                        <span>{order.date}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[24px] border border-zinc-200 bg-zinc-50 p-4">
-                <p className="text-sm font-semibold text-zinc-900">علاقه‌مندی‌ها</p>
-                <div className="mt-4 space-y-3">
-                  {favoriteProducts.length === 0 ? (
-                    <div className="rounded-[18px] border border-dashed border-zinc-300 bg-white p-3 text-sm text-zinc-500">
-                      هنوز محصولی به علاقه‌مندی‌ها اضافه نکرده‌اید.
-                    </div>
-                  ) : (
-                    favoriteProducts.map((product) => (
-                      <div key={product.title} className="rounded-[18px] border border-zinc-200 bg-white p-3">
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <p className="font-semibold text-zinc-900">{product.title}</p>
-                            <p className="mt-1 text-sm text-zinc-500">{product.subtitle}</p>
-                          </div>
-                          <button
-                            onClick={() => toggleFavorite(product)}
-                            className="rounded-full p-1.5 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
-                            aria-label={`حذف ${product.title} از علاقه‌مندی‌ها`}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {cartToast && (
-        <div className="fixed bottom-5 left-1/2 z-[90] -translate-x-1/2 rounded-full border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-2xl">
-          {cartToast} · <button onClick={() => setIsCartOpen(true)} className="font-semibold text-zinc-900 underline-offset-2 hover:underline">مشاهده سبد</button>
-        </div>
-      )}
-
+      {toast && <div className="fixed bottom-6 left-1/2 z-[110] flex -translate-x-1/2 items-center gap-2 rounded-full bg-[#171717] px-5 py-3 text-sm font-bold text-white shadow-2xl"><Check size={16} className="text-[#f5c84c]" />{toast}<button onClick={() => setCartOpen(true)} className="mr-2 text-[#f5c84c] underline underline-offset-4">سبد خرید</button></div>}
       <ChatBox />
     </div>
   );
