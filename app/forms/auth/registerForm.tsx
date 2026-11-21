@@ -2,6 +2,7 @@ import Input from "@/app/component/shared/forms/input/input";
 import { Form, FormikProps, withFormik } from "formik";
 import callApi from "@/app/helpers/callApi";
 import React, { useEffect } from "react";
+import Link from 'next/link';
 import * as yup from "yup";
 import { useRouter } from 'next/navigation';
 
@@ -61,7 +62,11 @@ const InnerRegisterForm = (props: FormikProps<RegisterFormValues>) => {
                     <span className="text-sm my-2 uppercase mx-6 text-gray-400">Or</span>
                     <div className="w-full my-2 h-[1px] bg-gray-300"></div>
                 </div>
-                <a href="/auth/login">have an account?</a>
+                <Link href="/auth/register"
+                    className="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-white/30 bg-white/20 px-4 py-3 text-sm font-semibold text-indigo-700 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/40 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                    You have an account? Sign in
+                </Link>
             </div>
         </Form>
     )

@@ -1,7 +1,9 @@
 import Input from "@/app/component/shared/forms/input/input";
 import { Form, FormikProps, withFormik } from "formik";
 import React, { useEffect } from "react";
+import { useCookies } from "react-cookie";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import callApi from "@/app/helpers/callApi";
 import * as yup from "yup";
 
@@ -38,12 +40,12 @@ const InnerLoginForm = (props: FormikProps<LoginFormValues>) => {
             </div>
 
             <div>
-                <Input name='password' type='' label='Password' />
+                <Input name='password' type='password' label='Password' />
             </div>
 
             {/* پیام خطا اگر اطلاعات اشتباه باشد */}
             {props.status === 'error' && (
-                <div className="text-red-600 text-center my-2">اطلاعات وارد شده اشتباه است!</div>
+                <div className="text-red-600 text-center my-2">"wrong email or password"</div>
             )}
             <div>
                 <button
@@ -57,15 +59,20 @@ const InnerLoginForm = (props: FormikProps<LoginFormValues>) => {
                     <span className="text-sm my-2 uppercase mx-6 text-gray-400">Or</span>
                     <div className="w-full my-2 h-[1px] bg-gray-300"></div>
                 </div>
-                <a href="./../../auth/register"> dont have a account?</a>
+                <Link href="/auth/register"
+                    className="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-white/30 bg-white/20 px-4 py-3 text-sm font-semibold text-indigo-700 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/40 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                    Don't have an account? Sign up
+                </Link>
             </div>
         </Form>
     )
 }
 
 interface LoginFormProps {
-    email?: string
+
 }
+
 
 
 
@@ -75,7 +82,7 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValues>({
         password: ''
     }),
     validationSchema: loginFormValidationSchema,
-    handleSubmit: async (values, { setStatus }) => {
+    handleSubmit: async (values, { props, setStatus }) => {
         try {
             // فرض بر این است که API شما مسیر 'auth/login' دارد و اگر اطلاعات درست باشد، لاگین موفق می‌شود
             await callApi().post('auth/login', values);
@@ -83,6 +90,14 @@ const LoginForm = withFormik<LoginFormProps, LoginFormValues>({
         } catch (err) {
             setStatus('error');
         }
+        // const res = await callApi().post('auth/login', values);
+        // if (res.status === 200) {
+        //     props.setCookie('shopy-token', res.data.token),{
+        //         'maxAge' : 3600 * 24 * 30,
+        //         'domain' : 'localhost',
+        //         'path' : '/'
+        //     }
+        // }
     }
 })(InnerLoginForm)
 

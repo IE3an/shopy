@@ -1,28 +1,19 @@
-"use client"; 
-import React from 'react';
-import type { NextPage } from 'next';
-import RegisterForm from '@/app/forms/auth/registerForm';
-import './style.css';
-import './reset.css';
-
+"use client";
+import React from "react";
+import type { NextPage } from "next";
+import RegisterForm from "@/app/forms/auth/registerForm";
+import styles from "./style.module.css";
 
 const Register: NextPage = () => {
-
-    return (
-        <>
-            <div className="back min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                </div>
-
-                <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-md card">
-                    <div className="bg-white py-4 px-2 shadow sm:rounded-lg sm:px-10 content">
-                        <RegisterForm/>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
+  return (
+    <div className={`min-h-dvh w-full px-4 py-2 sm:px-6 lg:px-8 ${styles.back}`}>
+      <div className={`mx-auto w-full max-w-md ${styles.card}`}>
+        <div className={`bg-white ${styles.content}`}>
+          <RegisterForm />
+        </div>
+      </div>
+    </div>
+  );
 };
-
 
 export default Register;

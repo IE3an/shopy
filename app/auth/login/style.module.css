@@ -1,0 +1,179 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,300;1,400&display=swap");
+
+.back,
+.back * {
+  box-sizing: border-box;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+.back * {
+  margin: 0;
+  padding: 0;
+}
+
+.back {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  padding: 1rem;
+  width: 100%;
+}
+
+.card {
+  width: min(320px, calc(100vw - 80px));
+  min-height: 420px;
+  height: auto;
+  position: relative;
+  cursor: pointer;
+  z-index: 0;
+}
+
+.card::before,
+.card::after {
+  content: "";
+  border-radius: 20px;
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  background: #89216b;
+  z-index: -1;
+  transition: all 0.6s ease;
+}
+
+.card::before {
+  top: 0;
+  right: 0;
+}
+
+.card::after {
+  bottom: 0;
+  left: 0;
+  background: #da4453;
+}
+
+.card:hover::before {
+  width: 70px;
+  height: 70px;
+  transform: translate(30px, -30px);
+  border-radius: 50%;
+}
+
+.card:hover::after {
+  width: 65px;
+  height: 65px;
+  transform: translate(-10px, 10px);
+  border-radius: 50%;
+}
+
+.content {
+  width: 100%;
+  min-height: 420px;
+  border-radius: 20px;
+  height: auto;
+  background: rgba(255, 255, 255, 0.089);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.527);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.055);
+  transition: all 0.4s ease;
+  padding: 1.25rem;
+}
+
+.content input {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #242424;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.content input::placeholder {
+  color: rgba(36, 36, 36, 0.55);
+}
+
+.content input:focus {
+  border-color: #89216b;
+  background: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 12px rgba(137, 33, 107, 0.2);
+}
+
+.content input:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.content p {
+  font-size: 0.8em;
+
+  padding: 25px;
+  text-align: center;
+}
+
+.content button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #89216b, #da4453);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(137, 33, 107, 0.25);
+}
+
+.content button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(137, 33, 107, 0.4);
+  filter: brightness(1.1);
+}
+
+.content button:active {
+  transform: scale(0.97);
+}
+
+.content button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.card:hover .content {
+  color: rgb(36, 36, 36);
+}
+
+.content a[href="/auth/register"] {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 12px;
+  color: #89216b;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.content a[href="/auth/register"]:hover {
+  color: #da4453;
+  background: rgba(137, 33, 107, 0.08);
+  transform: translateY(-2px);
+}
+
+.content a[href="/auth/register"]:focus-visible {
+  outline: 2px solid #89216b;
+  outline-offset: 3px;
+}
